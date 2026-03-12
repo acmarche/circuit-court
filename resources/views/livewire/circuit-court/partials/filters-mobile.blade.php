@@ -66,6 +66,8 @@
                                     <div x-show="openTab === {{ $groupIndex }}" x-collapse class="px-2 pb-2 pt-2">
                                         <div class="space-y-4">
                                             @foreach ($group->tags as $tag)
+                                                @php($tagShopCount = $tag->shops()->where('enabled', true)->whereHas('tags', fn ($q) => $q->where('slug', 'circuit-court'))->count())
+                                                @continue($tagShopCount === 0)
                                                 <label for="m-tag-{{ $tag->id }}" class="flex items-center gap-2 cursor-pointer">
                                                     <input id="m-tag-{{ $tag->id }}" type="checkbox"
                                                            wire:click="toggleTag({{ $tag->id }})"

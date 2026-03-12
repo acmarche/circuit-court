@@ -22,6 +22,8 @@
                         </legend>
                         <div class="space-y-3 pt-4">
                             @foreach ($group->tags as $tag)
+                                @php($tagShopCount = $tag->shops()->where('enabled', true)->whereHas('tags', fn ($q) => $q->where('slug', 'circuit-court'))->count())
+                                @continue($tagShopCount === 0)
                                 <label for="tag-{{ $tag->id }}" class="flex items-center gap-2 cursor-pointer group">
                                     <input
                                         id="tag-{{ $tag->id }}"
@@ -35,7 +37,7 @@
                                     @endif
                                     <span class="text-sm text-carto-main group-hover:text-carto-pink transition">
                                         {{ $tag->name }}
-                                        <span class="text-carto-gray-200">({{ $tag->shops()->where('enabled', true)->whereHas('tags', fn ($q) => $q->where('slug', 'circuit-court'))->count() }})</span>
+                                        <span class="text-carto-gray-200">({{ $tagShopCount }})</span>
                                     </span>
                                     @if ($tag->description)
                                         <span class="relative group/tip">
