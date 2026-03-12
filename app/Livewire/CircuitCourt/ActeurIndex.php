@@ -45,6 +45,7 @@ final class ActeurIndex extends Component
     public function tagGroups(): Collection
     {
         return TagGroup::query()
+            ->where('private', false)
             ->with(['tags' => fn ($q) => $q->where('private', false)->orderBy('name')])
             ->orderBy('name')
             ->get();
