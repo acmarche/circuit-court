@@ -22,7 +22,7 @@
                         </legend>
                         <div class="space-y-3 pt-4">
                             @foreach ($group->tags as $tag)
-                                @php($tagShopCount = $tag->shops()->where('enabled', true)->whereHas('tags', fn ($q) => $q->where('slug', 'circuit-court'))->count())
+                                @php($tagShopCount = $tag->shops()->whereHas('tags', fn ($q) => $q->where('slug', 'circuit-court'))->count())
                                 @continue($tagShopCount === 0)
                                 <label for="tag-{{ $tag->id }}" class="flex items-center gap-2 cursor-pointer group">
                                     <input
