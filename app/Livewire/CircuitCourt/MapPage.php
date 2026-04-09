@@ -39,7 +39,7 @@ final class MapPage extends Component
             ->whereNotNull('longitude')
             ->when($this->selectedLocality !== '', fn (Builder $q): Builder => $q->where('city', $this->selectedLocality))
             ->when($this->selectedTags !== [], fn (Builder $q): Builder => $q->whereHas('tags', fn (Builder $sub): Builder => $sub->whereIn('tags.id', $this->selectedTags)))
-            ->with(['tags' => fn ($q) => $q->where('private', false), 'categories', 'medias'])
+            ->with(['tags' => fn ($q) => $q->where('private', false), 'categories', 'media'])
             ->orderBy('company')
             ->get();
     }

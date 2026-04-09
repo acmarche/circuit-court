@@ -1,8 +1,5 @@
 @php
-    $mainImage = $shop->medias->first(fn ($m) => $m->is_main);
-    $cover = $mainImage
-        ? asset('storage/'.$mainImage->file_name)
-        : ($shop->medias->first() ? asset('storage/'.$shop->medias->first()->file_name) : null);
+    $cover = $shop->getFirstMediaUrl('images');
     $categoryIcon = $shop->categories->first()?->icon
         ? asset('storage/bottin/icons/'.$shop->categories->first()->icon)
         : null;
@@ -194,14 +191,14 @@
                 @endif
 
                 {{-- Gallery --}}
-                @if ($shop->medias->count() > 1)
+                @if ($shop->getMedia('images')->count() > 1)
                     <div>
                         <h3 class="text-lg font-lobster font-bold text-carto-main mb-3">Galerie</h3>
                         <div class="grid gap-4 lg:grid-cols-2">
-                            @foreach ($shop->medias as $media)
+                            @foreach ($shop->getMedia('images') as $media)
                                 @if (str_starts_with($media->mime_type ?? '', 'image'))
                                     <img
-                                        src="{{ asset('storage/bottin/fiches/'.$shop->id.'/'.$media->file_name) }}"
+                                        src="{{ $media->getUrl() }}"
                                         alt="{{ $media->name ?? $shop->company }}"
                                         class="w-full h-72 object-cover bg-slate-300 rounded-lg"
                                         loading="lazy"

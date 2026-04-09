@@ -1,10 +1,7 @@
 @props(['shop'])
 
 @php
-    $mainImage = $shop->medias->first(fn ($m) => $m->is_main);
-    $image = $mainImage
-        ? asset('storage/'.$mainImage->file_name)
-        : ($shop->medias->first() ? asset('storage/'.$shop->medias->first()->file_name) : null);
+    $image = $shop->getFirstMediaUrl('images');
 @endphp
 
 <article class="group relative flex flex-col overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm hover:shadow-md transition-shadow duration-300">

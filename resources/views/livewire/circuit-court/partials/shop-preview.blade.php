@@ -1,7 +1,7 @@
 {{-- Shop preview slide-over panel --}}
 @php
     use App\Models\Shop;$previewShop = $previewShopId
-        ? Shop::with(['tags' => fn ($q) => $q->where('private', false), 'categories', 'medias'])
+        ? Shop::with(['tags' => fn ($q) => $q->where('private', false), 'categories', 'media'])
             ->whereHas('tags', fn ($q) => $q->where('slug', 'circuit-court'))
             ->find($previewShopId)
         : null;
@@ -66,11 +66,8 @@
                         {{-- Content --}}
                         <div class="flex-1 overflow-y-auto p-5 space-y-5">
                             {{-- Cover image --}}
-                            @php
-                                $mainImage = $previewShop->medias->first(fn ($m) => $m->is_main) ?? $previewShop->medias->first();
-                            @endphp
-                            @if ($mainImage)
-                                <img src="{{ asset('storage/'.$mainImage->file_name) }}"
+                            @if ($previewShop->getFirstMediaUrl('images'))
+                                <img src="{{ $previewShop->getFirstMediaUrl('images') }}"
                                      alt="{{ $previewShop->company }}"
                                      class="w-full h-48 object-cover rounded-lg">
                             @endif

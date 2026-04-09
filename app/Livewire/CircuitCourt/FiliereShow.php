@@ -34,7 +34,7 @@ final class FiliereShow extends Component
         return $this->tag->shops()
             ->where('enabled', true)
             ->whereHas('tags', fn (Builder $q): Builder => $q->where('slug', self::CIRCUIT_COURT_TAG_SLUG))
-            ->with(['tags' => fn ($q) => $q->where('private', false), 'categories', 'medias'])
+            ->with(['tags' => fn ($q) => $q->where('private', false), 'categories', 'media'])
             ->orderBy('company')
             ->get();
     }

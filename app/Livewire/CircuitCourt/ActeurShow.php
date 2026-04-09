@@ -16,7 +16,7 @@ final class ActeurShow extends Component
 
     public function mount(Shop $shop): void
     {
-        $this->shop = $shop->load(['tags' => fn ($q) => $q->where('private', false), 'categories', 'medias']);
+        $this->shop = $shop->load(['tags' => fn ($q) => $q->where('private', false), 'categories', 'media']);
     }
 
     public function render(): View
