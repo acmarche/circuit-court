@@ -3,13 +3,18 @@
         "claude_code"
     ],
     "guidelines": true,
-    "herd_mcp": false,
     "mcp": true,
     "nightwatch_mcp": false,
+    "packages": [
+        "livewire/blaze"
+    ],
     "sail": false,
     "skills": [
+        "laravel-best-practices",
+        "configure-nightwatch",
         "livewire-development",
         "pest-testing",
-        "tailwindcss-development"
+        "tailwindcss-development",
+        "blaze-optimize"
     ]
 }
