@@ -9,13 +9,18 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Auth;
+use Spatie\Image\Enums\Fit;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media as MediaSpatie;
 
-final class Shop extends Model
+final class Shop extends Model implements HasMedia
 {
     use HasSlug;
+    use InteractsWithMedia;
 
     protected $fillable = [
-        'point_of_sale_id',
         'address_id',
         'company',
         'street',
@@ -24,7 +29,6 @@ final class Shop extends Model
         'city',
         'phone',
         'phone_other',
-        'fax',
         'mobile',
         'website',
         'email',
@@ -36,12 +40,6 @@ final class Shop extends Model
         'linkedin',
         'longitude',
         'latitude',
-        'city_center',
-        'open_at_lunch',
-        'pmr',
-        'click_collect',
-        'ecommerce',
-        'enabled',
         'vat_number',
         'function',
         'civility',
@@ -53,7 +51,6 @@ final class Shop extends Model
         'contact_city',
         'contact_phone',
         'contact_phone_other',
-        'contact_fax',
         'contact_mobile',
         'contact_email',
         'admin_function',
@@ -62,7 +59,6 @@ final class Shop extends Model
         'admin_first_name',
         'admin_phone',
         'admin_phone_other',
-        'admin_fax',
         'admin_mobile',
         'admin_email',
         'comment1',
@@ -72,22 +68,23 @@ final class Shop extends Model
         'user',
     ];
 
-    /** @return BelongsTo<PointOfSale, $this> */
-    public function pointOfSale(): BelongsTo
+    public function registerMediaCollections(): void
     {
-        return $this->belongsTo(PointOfSale::class);
+        $this->addMediaCollection('images')->useDisk('public');
+    }
+
+    public function registerMediaConversions(?MediaSpatie $media = null): void
+    {
+        $this
+            ->addMediaConversion('preview')
+            ->fit(Fit::Contain, 300, 300)
+            ->nonQueued();
     }
 
     /** @return BelongsTo<Address, $this> */
     public function address(): BelongsTo
     {
         return $this->belongsTo(Address::class);
-    }
-
-    /** @return HasMany<Media, $this> */
-    public function medias(): HasMany
-    {
-        return $this->hasMany(Media::class);
     }
 
     /** @return HasMany<Schedule, $this> */
@@ -109,19 +106,19 @@ final class Shop extends Model
         return $this->belongsToMany(Tag::class, 'shop_tag');
     }
 
-    /**
-     * @return array<string, string>
-     */
-    protected function casts(): array
+    public function hasTag(string $name): bool
     {
-        return [
-            'city_center' => 'boolean',
-            'click_collect' => 'boolean',
-            'ecommerce' => 'boolean',
-            'enabled' => 'boolean',
-            'open_at_lunch' => 'boolean',
-            'pmr' => 'boolean',
-        ];
+        return $this->tags->contains('name', $name);
+    }
+
+    protected static function booted(): void
+    {
+        self::creating(function (self $model) {
+            if (Auth::check()) {
+                $user = Auth::user();
+                $model->user = $user->username;
+            }
+        });
     }
 
     private function slugSourceField(): string
