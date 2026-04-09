@@ -27,11 +27,9 @@ final class FiliereIndex extends Component
             ->where('private', false)
             ->where('slug', '!=', self::CIRCUIT_COURT_TAG_SLUG)
             ->whereHas('shops', fn (Builder $q): Builder => $q
-                ->where('enabled', true)
                 ->whereHas('tags', fn (Builder $sub): Builder => $sub->where('slug', self::CIRCUIT_COURT_TAG_SLUG))
             )
             ->withCount(['shops' => fn (Builder $q): Builder => $q
-                ->where('enabled', true)
                 ->whereHas('tags', fn (Builder $sub): Builder => $sub->where('slug', self::CIRCUIT_COURT_TAG_SLUG)),
             ])
             ->orderBy('name')

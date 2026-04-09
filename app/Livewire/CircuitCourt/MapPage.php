@@ -60,7 +60,6 @@ final class MapPage extends Component
     public function localities(): Collection
     {
         return Shop::query()
-            ->where('enabled', true)
             ->whereNotNull('city')
             ->where('city', '!=', '')
             ->whereHas('tags', fn (Builder $q): Builder => $q->where('slug', self::CIRCUIT_COURT_TAG_SLUG))
@@ -130,7 +129,6 @@ final class MapPage extends Component
     private function baseQuery(): Builder
     {
         return Shop::query()
-            ->where('enabled', true)
             ->whereHas('tags', fn (Builder $q): Builder => $q->where('slug', self::CIRCUIT_COURT_TAG_SLUG));
     }
 }

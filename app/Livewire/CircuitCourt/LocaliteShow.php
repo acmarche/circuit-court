@@ -29,7 +29,6 @@ final class LocaliteShow extends Component
     public function shops(): Collection
     {
         return Shop::query()
-            ->where('enabled', true)
             ->where('city', $this->city)
             ->whereHas('tags', fn (Builder $q): Builder => $q->where('slug', self::CIRCUIT_COURT_TAG_SLUG))
             ->with(['tags' => fn ($q) => $q->where('private', false), 'categories', 'media'])
