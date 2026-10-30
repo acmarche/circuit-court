@@ -30,6 +30,16 @@ final class MapPage extends Component
 
     public ?int $previewShopId = null;
 
+    public function mount(): void
+    {
+        $this->selectedTags = $this->sanitizeTagIds($this->selectedTags);
+    }
+
+    public function updatedSelectedTags(): void
+    {
+        $this->selectedTags = $this->sanitizeTagIds($this->selectedTags);
+    }
+
     /** @return Collection<int, Shop> */
     #[Computed]
     public function shops(): Collection
@@ -123,6 +133,20 @@ final class MapPage extends Component
     public function render(): View
     {
         return view('livewire.circuit-court.map-page');
+    }
+
+    /**
+     * Keep only scalar numeric ids: the property is client-writable (URL and Livewire payload).
+     *
+     * @param  array<array-key, mixed>  $tagIds
+     * @return list<int>
+     */
+    private function sanitizeTagIds(array $tagIds): array
+    {
+        return array_values(array_unique(array_map(
+            intval(...),
+            array_filter($tagIds, fn (mixed $tagId): bool => is_int($tagId) || (is_string($tagId) && ctype_digit($tagId))),
+        )));
     }
 
     /** @return Builder<Shop> */

@@ -111,3 +111,16 @@ it('shows the shop preview on the map page', function (): void {
         ->assertSet('previewShopId', $shop->id)
         ->assertSee($shop->company);
 });
+
+it('ignores malformed tag filters', function (string $component): void {
+    Livewire::test($component)
+        ->set('selectedTags', [['nested'], 'abc', '1'])
+        ->assertOk();
+
+    Livewire::withQueryParams(['tags' => [['nested'], 1]])
+        ->test($component)
+        ->assertOk();
+})->with([
+    'map page' => [MapPage::class],
+    'acteur list' => [ActeurIndex::class],
+]);
